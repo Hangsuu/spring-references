@@ -1,5 +1,6 @@
 package com.example.insiderback.member.controller;
 
+import com.example.insiderback.common.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,11 @@ public class MemberController {
         return loginService.getUser(id);
     }
     @PostMapping("/setUser")
-    public void setUser(@RequestBody MemberVO vo) {
+    public SingleResponse setUser(@RequestBody MemberVO vo) {
         log.info("전송 = {}", vo);
         loginService.setUser(vo);
         log.info("입력 성공 = {}", loginService.getUser(vo.getId()));
+        return new SingleResponse(vo);
     }
 
     @PostMapping("/delUser")
