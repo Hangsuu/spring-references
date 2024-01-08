@@ -1,4 +1,4 @@
-package com.example.insiderback.common.config;
+package com.example.insiderback.common.responseModel.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.CrossOrigin;

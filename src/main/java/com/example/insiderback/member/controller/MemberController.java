@@ -1,6 +1,6 @@
 package com.example.insiderback.member.controller;
 
-import com.example.insiderback.common.model.SingleResponse;
+import com.example.insiderback.common.responseModel.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.service.LoginService;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.insiderback.common.model;
+package com.example.insiderback.common.responseModel.model;
 
 import lombok.Getter;
 import lombok.Setter;
