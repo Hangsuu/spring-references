@@ -25,7 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(vo != null) {
             return createUserDetails(vo);
         } else {
-            throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다."));
+            throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다.");
         }
     }
 
