@@ -1,7 +1,9 @@
 package com.example.insiderback.member.controller;
 
+import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.common.responseModel.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
+import com.example.insiderback.member.service.JwtLoginService;
 import com.example.insiderback.member.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     @Autowired
     LoginService loginService;
+    @Autowired
+    JwtLoginService jwtLoginService;
 
     @PostMapping("/getUser")
     public MemberVO login(String id) {
@@ -38,6 +42,11 @@ public class MemberController {
         return "성공";
     }
 
-//    @PostMapping("/login")
-
+    @PostMapping("/login")
+    public SingleResponse signIn(@RequestBody MemberVO memberVO) {
+        JwtTokenVO jwtToken = jwtLoginService.login(memberVO);
+        log.info("request username = {}, password = {}", memberVO.getId(), memberVO.getPassword());
+        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+        return new SingleResponse(jwtToken);
+    }
 }
