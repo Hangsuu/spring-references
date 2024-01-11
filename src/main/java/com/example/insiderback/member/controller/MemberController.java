@@ -5,6 +5,7 @@ import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -36,4 +37,7 @@ public class MemberController {
     public String test() {
         return "성공";
     }
+
+//    @PostMapping("/login")
+
 }

@@ -1,6 +1,6 @@
 package com.example.insiderback.common.jwt.service;
 
-import com.example.insiderback.common.jwt.model.JwtTokenModel;
+import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -36,7 +36,7 @@ public class JwtTokenProvider {
     }
 
     // Member 정보를 가지고 AccessToken, RefreshToken을 생성하는 메서드
-    public JwtTokenModel generateToken(Authentication authentication) {
+    public JwtTokenVO generateToken(Authentication authentication) {
         // 권한 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -60,7 +60,7 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        return JwtTokenModel.builder()
+        return JwtTokenVO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
