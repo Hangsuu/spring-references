@@ -1,7 +1,7 @@
 package com.example.insiderback.member.controller;
 
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
-import com.example.insiderback.common.redis.entity.MemberEntity;
+import com.example.insiderback.common.redis.entity.MemberRedisEntity;
 import com.example.insiderback.common.redis.repository.RedisRepository;
 import com.example.insiderback.common.responseModel.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
@@ -9,7 +9,6 @@ import com.example.insiderback.member.service.JwtLoginService;
 import com.example.insiderback.member.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -51,7 +50,7 @@ public class MemberController {
         JwtTokenVO jwtToken = jwtLoginService.login(memberVO);
         log.info("request username = {}, password = {}", memberVO.getId(), memberVO.getPassword());
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-        redisRepository.save(new MemberEntity(memberVO.getId(), jwtToken));
+        redisRepository.save(new MemberRedisEntity(memberVO.getId(), jwtToken));
         log.info("redisRepository.findById = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO());
         log.info("id = {}", (redisRepository.findById(memberVO.getId()).get()).getId());
         log.info("accessToken = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO().getAccessToken());
