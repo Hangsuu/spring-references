@@ -1,6 +1,8 @@
 package com.example.insiderback.member.controller;
 
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
+import com.example.insiderback.common.redis.entity.MemberEntity;
+import com.example.insiderback.common.redis.repository.RedisRepository;
 import com.example.insiderback.common.responseModel.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.service.JwtLoginService;
@@ -18,6 +20,8 @@ public class MemberController {
     LoginService loginService;
     @Autowired
     JwtLoginService jwtLoginService;
+    @Autowired
+    RedisRepository redisRepository;
 
     @PostMapping("/getUser")
     public MemberVO login(String id) {
@@ -47,6 +51,11 @@ public class MemberController {
         JwtTokenVO jwtToken = jwtLoginService.login(memberVO);
         log.info("request username = {}, password = {}", memberVO.getId(), memberVO.getPassword());
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+        redisRepository.save(new MemberEntity(memberVO.getId(), jwtToken));
+        log.info("redisRepository.findById = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO());
+        log.info("id = {}", (redisRepository.findById(memberVO.getId()).get()).getId());
+        log.info("accessToken = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO().getAccessToken());
+        log.info("refreshToken = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO().getRefreshToken());
         return new SingleResponse(jwtToken);
     }
 }
