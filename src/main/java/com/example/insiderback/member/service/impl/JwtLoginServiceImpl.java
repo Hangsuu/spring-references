@@ -26,6 +26,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
 
     @Override
     public JwtTokenVO login(MemberVO vo) {
+        log.info("MemberVO = {}", vo.getId());
         // 1. username + password 를 기반으로 Authentication 객체 생성
         // 이때 authentication 은 인증 여부를 확인하는 authenticated 값이 false
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(vo.getId(), vo.getPassword());
@@ -37,14 +38,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         JwtTokenVO jwtToken = jwtTokenProvider.generateToken(authentication);
 
-        // 4. redis에 저장
-        log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
-        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-        redisRepository.save(new MemberRedisEntity(vo.getId(), jwtToken));
-        log.info("redisRepository.findById = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO());
-        log.info("id = {}", (redisRepository.findById(vo.getId()).get()).getId());
-        log.info("accessToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getAccessToken());
-        log.info("refreshToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getRefreshToken());
+        memoryRepo.setUser(vo);
 
         return jwtToken;
     }

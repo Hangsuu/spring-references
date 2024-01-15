@@ -7,6 +7,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,7 @@ import java.io.IOException;
  * SecurityContext에 저장하여 인증된 요청을 처리할 수 있도록 한다.
  */
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends GenericFilterBean {
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -29,6 +31,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         // resolveToken() 메서드를 사용하여 요청 헤더에서 JWT 토큰을 추출
         String token = resolveToken((HttpServletRequest) request);
 
+        log.info("token = {}", token);
         // 2. validateToken으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) { // JwtTokenProvider의 validateToken() 메서드로 JWT 토큰의 유효성 검증
             // 토큰이 유효하면 JwtTokenProvider의 getAuthentication() 메서드로 Authentication(인증 객체) 객체를 가지고 와서 SecurityContext에 저장
@@ -36,6 +39,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+//        else if(token == null &&
+//                !((HttpServletRequest) request).getRequestURL().toString().equals("http://localhost:8080/member/setUser")) {
+//            throw new RuntimeException("인증정보 없음");
+//        }
         // chain.doFilter()를 호출하여 다음 필터로 요청을 전달
         chain.doFilter(request, response);
     }
@@ -43,6 +50,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     // Request Header에서 토큰 정보 추출
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        log.info("resolveToken = {}", bearerToken);
         // "Authorization" 헤더에서 "Bearer" 접두사로 시작하는 토큰을 추출하여 반환
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
             return bearerToken.substring(7);

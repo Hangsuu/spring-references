@@ -19,6 +19,8 @@ public class MemberController {
     LoginService loginService;
     @Autowired
     JwtLoginService jwtLoginService;
+    @Autowired
+    RedisRepository redisRepository;
 
     @PostMapping("/getUser")
     public MemberVO login(String id) {
@@ -46,6 +48,15 @@ public class MemberController {
     @PostMapping("/login")
     public SingleResponse signIn(@RequestBody MemberVO memberVO) {
         JwtTokenVO jwtToken = jwtLoginService.login(memberVO);
+
+        // 4. redis에 저장
+        log.info("request username = {}, password = {}", memberVO.getId(), memberVO.getPassword());
+        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+        redisRepository.save(new MemberRedisEntity(memberVO.getId(), jwtToken));
+        log.info("redisRepository.findById = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO());
+        log.info("id = {}", (redisRepository.findById(memberVO.getId()).get()).getId());
+        log.info("accessToken = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO().getAccessToken());
+        log.info("refreshToken = {}", (redisRepository.findById(memberVO.getId()).get()).getJwtTokenVO().getRefreshToken());
         return new SingleResponse(jwtToken);
     }
 }
