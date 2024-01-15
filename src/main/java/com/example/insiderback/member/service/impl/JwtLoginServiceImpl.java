@@ -22,7 +22,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
     private final MemoryRepo memoryRepo;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
-    RedisRepository redisRepository;
+    private final RedisRepository redisRepository;
 
     @Override
     public JwtTokenVO login(MemberVO vo) {
@@ -39,6 +39,15 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         JwtTokenVO jwtToken = jwtTokenProvider.generateToken(authentication);
 
         memoryRepo.setUser(vo);
+
+        // 4. redis에 저장
+        log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
+        log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
+        redisRepository.save(new MemberRedisEntity(vo.getId(), jwtToken));
+        log.info("redisRepository.findById = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO());
+        log.info("id = {}", (redisRepository.findById(vo.getId()).get()).getId());
+        log.info("accessToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getAccessToken());
+        log.info("refreshToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getRefreshToken());
 
         return jwtToken;
     }
