@@ -1,6 +1,7 @@
 package com.example.insiderback.common.redis.entity;
 
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
+import com.example.insiderback.member.model.MemberVO;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
@@ -12,11 +13,11 @@ import org.springframework.data.redis.core.RedisHash;
 public class MemberRedisEntity {
     //keyspace 와 합쳐져서 레디스에 저장된 최종 키 값은 keyspace:id 가 됩니다.
     @Id
-    private String id;
-    private JwtTokenVO jwtTokenVO;
+    private String token;
+    private MemberVO memberVO;
 
-    public MemberRedisEntity(String id, JwtTokenVO jwtTokenVO) {
-        this.id = id;
-        this.jwtTokenVO = jwtTokenVO;
+    public MemberRedisEntity(String token, MemberVO memberVO) {
+        this.token = token;
+        this.memberVO = memberVO;
     }
 }

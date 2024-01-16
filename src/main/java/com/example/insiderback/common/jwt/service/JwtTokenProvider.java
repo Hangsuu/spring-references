@@ -56,7 +56,7 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성 : Access Token의 갱신을 위해 사용 됨
         String refreshToken = Jwts.builder()
-                .setExpiration(new Date(now + 86400000))
+                .setExpiration(new Date(now + 86400000*7L))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
@@ -77,6 +77,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
+        log.info("claims id = {}", claims.getId());
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -128,7 +129,7 @@ public class JwtTokenProvider {
      * 주어진 Access token을 복호화하고, 만료된 토큰인 경우에도 Claims 반환
      */
     // accessToken
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -139,5 +140,16 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
 
+    }
+
+    // 복호화
+    public Jws<Claims> getClaims(String jwt) {
+        try{
+            return Jwts.parser().setSigningKey(key).parseClaimsJws(jwt);
+        }
+        catch (SignatureException e){
+            log.info(e.getMessage());
+            return null;
+        }
     }
 }

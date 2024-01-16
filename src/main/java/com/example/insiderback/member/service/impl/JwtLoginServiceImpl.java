@@ -7,6 +7,8 @@ import com.example.insiderback.common.redis.repository.RedisRepository;
 import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.repository.MemoryRepo;
 import com.example.insiderback.member.service.JwtLoginService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.Base64;
 
 @Service
 @Slf4j
@@ -43,11 +47,16 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         // 4. redis에 저장
         log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtToken.getAccessToken(), jwtToken.getRefreshToken());
-        redisRepository.save(new MemberRedisEntity(vo.getId(), jwtToken));
-        log.info("redisRepository.findById = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO());
-        log.info("id = {}", (redisRepository.findById(vo.getId()).get()).getId());
-        log.info("accessToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getAccessToken());
-        log.info("refreshToken = {}", (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getRefreshToken());
+        redisRepository.save(new MemberRedisEntity("accessToken" + jwtToken.getAccessToken(), vo));
+        redisRepository.save(new MemberRedisEntity("refreshToken" + jwtToken.getAccessToken(), vo));
+
+        // jwt 복호화 확인
+//        String token = (redisRepository.findById(vo.getId()).get()).getJwtTokenVO().getAccessToken();
+//        Jws<Claims> claims = jwtTokenProvider.getClaims(token);
+//        log.info("grantType = {},",claims.getBody().get("grantType"));
+//        log.info("accessToken = {},",claims.getBody().get("accessToken"));
+//        log.info("refreshToken = {},",claims.getBody().get("refreshToken"));
+
 
         return jwtToken;
     }
