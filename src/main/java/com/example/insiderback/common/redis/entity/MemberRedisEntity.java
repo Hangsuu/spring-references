@@ -13,11 +13,11 @@ import org.springframework.data.redis.core.RedisHash;
 public class MemberRedisEntity {
     //keyspace 와 합쳐져서 레디스에 저장된 최종 키 값은 keyspace:id 가 됩니다.
     @Id
-    private String token;
-    private MemberVO memberVO;
+    private String userId;
+    private String jwtToken;
 
-    public MemberRedisEntity(String token, MemberVO memberVO) {
-        this.token = token;
-        this.memberVO = memberVO;
+    public MemberRedisEntity(String userId, String jwtToken) {
+        this.userId = userId;
+        this.jwtToken = jwtToken;
     }
 }
