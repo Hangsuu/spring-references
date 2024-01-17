@@ -37,10 +37,10 @@ public class JwtLoginServiceImpl implements JwtLoginService {
 
         // 2. 실제 검증. authenticate() 메서드를 통해 요청된 Member 에 대한 검증 진행
         // authenticate 메서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드 실행
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authentication);
+        JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authenticationToken);
 
         // 4. redis에 저장
         log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
