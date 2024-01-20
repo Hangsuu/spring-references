@@ -2,6 +2,7 @@ package com.example.insiderback.common.security.config;
 
 import com.example.insiderback.common.jwt.config.JwtAuthenticationFilter;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
+import com.example.insiderback.common.redis.repository.RedisRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,6 +32,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisRepository redisRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -47,7 +49,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated() // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 )
                 // JWT 인증을 위하여 직접 구현한 필터를 UsernamePasswordAuthenticationFilter 전에 실행
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisRepository), UsernamePasswordAuthenticationFilter.class)
 //                .exceptionHandling(handler ->
 //                        handler.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
 //                )

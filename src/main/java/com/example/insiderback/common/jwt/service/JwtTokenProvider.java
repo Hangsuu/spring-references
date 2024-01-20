@@ -100,9 +100,9 @@ public class JwtTokenProvider {
          * UserDetails: interface, User: UserDetails를 구현한 class
          */
         //주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new User(claims.getSubject(), null, authorities);
         // UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증(Authentication) 객체를 생성
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
 
     // 토큰 정보를 검증하는 메서드, 주어진 토큰을 검증하여 유효성을 확인
@@ -156,5 +156,10 @@ public class JwtTokenProvider {
             log.info(e.getMessage());
             return null;
         }
+    }
+
+    public String getIdFromJwtToken(String token) {
+        Claims claims = parseClaims(token);
+        return claims.getSubject();
     }
 }

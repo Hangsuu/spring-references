@@ -1,6 +1,9 @@
 package com.example.insiderback.common.jwt.config;
 
+import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
+import com.example.insiderback.common.redis.entity.MemberRedisEntity;
+import com.example.insiderback.common.redis.repository.RedisRepository;
 import com.example.insiderback.member.model.MemberVO;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +21,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * 클라이언트 요청 시 JWT 인증을 하기 위해 설치하는 커스텀 필터로, UsernamePasswordAuthenticationFilter 이전에 실행 할 것이다.
@@ -28,6 +32,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisRepository redisRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -46,6 +51,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 요청을 처리하는 동안 인증 정보 유지
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+        } else if (token != null && !isValidatedToken) {
+            // access 토큰이 유효하지 않은 경우
+            String id = jwtTokenProvider.getIdFromJwtToken(token);
+            //refresh 토큰 체크
+            String refreshToken = redisRepository.findById("refreshToken" + id).get().getJwtToken();
+            boolean isRefreshTokenValidate = jwtTokenProvider.validateToken(refreshToken);
+            if(isRefreshTokenValidate) {
+                // 리스레시 토큰이 유효하다면 access, refresh token renew
+                Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+                JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authentication);
+
+                redisRepository.deleteById("accessToken" + id);
+                redisRepository.deleteById("refreshToken" + id);
+                redisRepository.save(new MemberRedisEntity("accessToken" + id ,jwtTokenVO.getAccessToken()));
+                redisRepository.save(new MemberRedisEntity("refreshToken" + id, jwtTokenVO.getAccessToken()));
+
+                response.setHeader("Authorization", jwtTokenVO.getAccessToken());
+            } else {
+                // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
+                redisRepository.deleteById("accessToken" + id);
+                redisRepository.deleteById("refreshToken" + id);
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         else {
             // 토큰이 없어도 접근 허용

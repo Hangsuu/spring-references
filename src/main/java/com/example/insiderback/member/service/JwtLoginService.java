@@ -7,4 +7,5 @@ public interface JwtLoginService {
     public JwtTokenVO login(MemberVO vo);
 
     public void logout(MemberVO vo);
+
 }
