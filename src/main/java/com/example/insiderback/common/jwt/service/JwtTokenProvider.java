@@ -50,7 +50,8 @@ public class JwtTokenProvider {
         long now = (new Date()).getTime();
 
         // Access Token 생성
-        Date accessTokenExpiresIn = new Date(now + 86400000);
+//        Date accessTokenExpiresIn = new Date(now + 86400000);
+        Date accessTokenExpiresIn = new Date(now + 1000*30);
         // 인증된 사용자의 권한 정보와 만료 시간을 담고 있음
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
@@ -61,6 +62,8 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성 : Access Token의 갱신을 위해 사용 됨
         String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth", authorities)
                 .setExpiration(new Date(now + 86400000*7L))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
@@ -82,7 +85,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
-        log.info("claims id = {}", claims.getId());
+        log.info("claims id = {}", claims.getSubject());
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -100,7 +103,30 @@ public class JwtTokenProvider {
          * UserDetails: interface, User: UserDetails를 구현한 class
          */
         //주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
-        UserDetails principal = new User(claims.getSubject(), null, authorities);
+        log.info("authorities = {}", authorities);
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        // UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증(Authentication) 객체를 생성
+        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+    }
+
+    public Authentication getRefreshAuthentication(String refreshToken) {
+        // Jwt 토큰 복호화
+        Claims claims = parseClaims(refreshToken);
+
+        // 클레임에서 권한 정보 가져오기
+        // 토큰의 클레임에서 권한 정보를 가져옴. "auth" 클레임은 토큰에 저장된 권한 정보를 나타냄
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
+                .map(SimpleGrantedAuthority::new) // 가져온 권한 정보를 SimpleGrantedAuthority 객체로 변환하여 컬렉션에 추가
+                .collect(Collectors.toList());
+
+        /**
+         * UserDetails 객체를 생성하여 주체(subject)와 권한 정보, 기타 필요한 정보를 설정
+         * UserDetails 객체를 만들어서 Authentication return
+         * UserDetails: interface, User: UserDetails를 구현한 class
+         */
+        //주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
+        log.info("authorities = {}", authorities);
+        UserDetails principal = new User(claims.getSubject(), "", authorities);
         // UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증(Authentication) 객체를 생성
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }

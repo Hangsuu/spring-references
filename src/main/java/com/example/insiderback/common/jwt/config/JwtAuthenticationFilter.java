@@ -42,22 +42,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("token = {}", token);
         boolean isValidatedToken = false;
-        if(token != null && !token.equals("")) {
+        boolean tokenIsNotEmpty = token != null && !token.equals("");
+        if(tokenIsNotEmpty) {
             isValidatedToken = jwtTokenProvider.validateToken(token);
         }
         // 2. validateToken으로 토큰 유효성 검사
-        if (token != null && isValidatedToken) { // JwtTokenProvider의 validateToken() 메서드로 JWT 토큰의 유효성 검증
+        if (tokenIsNotEmpty && isValidatedToken) { // JwtTokenProvider의 validateToken() 메서드로 JWT 토큰의 유효성 검증
             // 토큰이 유효하면 JwtTokenProvider의 getAuthentication() 메서드로 Authentication(인증 객체) 객체를 가지고 와서 SecurityContext에 저장
             // 요청을 처리하는 동안 인증 정보 유지
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        } else if (token != null && !isValidatedToken) {
+        } else if (tokenIsNotEmpty && !isValidatedToken) {
             // access 토큰이 유효하지 않은 경우
             String id = jwtTokenProvider.getIdFromJwtToken(token);
             //refresh 토큰 체크
             String refreshToken = redisRepository.findById("refreshToken" + id).get().getJwtToken();
+
+            log.info("refreshToken = {}", refreshToken);
             boolean isRefreshTokenValidate = jwtTokenProvider.validateToken(refreshToken);
             if(isRefreshTokenValidate) {
+                log.info("리프레시 토큰 재발급");
                 // 리스레시 토큰이 유효하다면 access, refresh token renew
                 Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
                 JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authentication);

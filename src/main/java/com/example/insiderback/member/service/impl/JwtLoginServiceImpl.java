@@ -48,7 +48,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         redisRepository.deleteById("accessToken" + vo.getId());
         redisRepository.deleteById("refreshToken" + vo.getId());
         redisRepository.save(new MemberRedisEntity("accessToken" + vo.getId() ,jwtTokenVO.getAccessToken()));
-        redisRepository.save(new MemberRedisEntity("refreshToken" + vo.getId(), jwtTokenVO.getAccessToken()));
+        redisRepository.save(new MemberRedisEntity("refreshToken" + vo.getId(), jwtTokenVO.getRefreshToken()));
 
         return jwtTokenVO;
     }
