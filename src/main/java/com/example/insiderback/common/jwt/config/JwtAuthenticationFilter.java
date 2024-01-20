@@ -48,10 +48,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         else {
-            MemberVO memberVO = new MemberVO();
-            memberVO.getRoles().add("temporary");
-            Authentication authentication = new UsernamePasswordAuthenticationToken("temporary", null, memberVO.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // 토큰이 없어도 접근 허용
+            filterChain.doFilter(request, response);
+            return;
         }
         // chain.doFilter()를 호출하여 다음 필터로 요청을 전달
         filterChain.doFilter(request, response);
