@@ -50,10 +50,4 @@ public class MemberController {
         return new SingleResponse(jwtToken);
     }
 
-    @PostMapping("/renewToken")
-    public SingleResponse renewToken(@RequestBody MemberVO memberVO, HttpServletResponse response) {
-        String refreshToken = null;
-        JwtTokenVO jwtToken = jwtLoginService.renewToken(memberVO.getId(), refreshToken);
-        return new SingleResponse(jwtToken);
-    }
 }
