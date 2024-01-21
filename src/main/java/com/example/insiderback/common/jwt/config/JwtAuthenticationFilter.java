@@ -56,28 +56,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // access 토큰이 유효하지 않은 경우
             String id = jwtTokenProvider.getIdFromJwtToken(token);
             //refresh 토큰 체크
-            String refreshToken = redisRepository.findById("refreshToken" + id).get().getJwtToken();
+            Optional<MemberRedisEntity> byId = redisRepository.findById("refreshToken" + id);
 
-            log.info("refreshToken = {}", refreshToken);
-            boolean isRefreshTokenValidate = jwtTokenProvider.validateToken(refreshToken);
-            if(isRefreshTokenValidate) {
-                log.info("리프레시 토큰 재발급");
-                // 리스레시 토큰이 유효하다면 access, refresh token renew
-                Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-                JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authentication);
-
-                redisRepository.deleteById("accessToken" + id);
-                redisRepository.deleteById("refreshToken" + id);
-                redisRepository.save(new MemberRedisEntity("accessToken" + id ,jwtTokenVO.getAccessToken()));
-                redisRepository.save(new MemberRedisEntity("refreshToken" + id, jwtTokenVO.getAccessToken()));
-
-                response.setHeader("Authorization", jwtTokenVO.getAccessToken());
-            } else {
+            String refreshToken = "";
+            if(byId.isEmpty()) {
                 // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
                 redisRepository.deleteById("accessToken" + id);
                 redisRepository.deleteById("refreshToken" + id);
+                response.setHeader("Authorization", "null");
                 filterChain.doFilter(request, response);
                 return;
+            } else {
+                refreshToken = redisRepository.findById("refreshToken" + id).get().getJwtToken();
+                log.info("refreshToken = {}", refreshToken);
+                boolean isRefreshTokenValidate = jwtTokenProvider.validateToken(refreshToken);
+                if(isRefreshTokenValidate) {
+                    log.info("리프레시 토큰 재발급");
+                    // 리스레시 토큰이 유효하다면 access, refresh token renew
+                    Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+                    JwtTokenVO jwtTokenVO = jwtTokenProvider.generateToken(authentication);
+
+                    redisRepository.deleteById("accessToken" + id);
+                    redisRepository.deleteById("refreshToken" + id);
+                    redisRepository.save(new MemberRedisEntity("accessToken" + id ,jwtTokenVO.getAccessToken()));
+                    redisRepository.save(new MemberRedisEntity("refreshToken" + id, jwtTokenVO.getAccessToken()));
+
+                    response.setHeader("Authorization", jwtTokenVO.getAccessToken());
+                } else {
+                    // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
+                    redisRepository.deleteById("accessToken" + id);
+                    redisRepository.deleteById("refreshToken" + id);
+                    response.setHeader("Authorization", "null");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
             }
         }
         else {
