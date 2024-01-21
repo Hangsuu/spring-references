@@ -8,4 +8,5 @@ public interface JwtLoginService {
 
     public void logout(MemberVO vo);
 
+    JwtTokenVO requestToken(String accessToken);
 }

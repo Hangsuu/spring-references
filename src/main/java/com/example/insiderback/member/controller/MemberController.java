@@ -7,6 +7,7 @@ import com.example.insiderback.common.responseModel.model.SingleResponse;
 import com.example.insiderback.member.model.MemberVO;
 import com.example.insiderback.member.service.JwtLoginService;
 import com.example.insiderback.member.service.LoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,4 +51,9 @@ public class MemberController {
         return new SingleResponse(jwtToken);
     }
 
+    @PostMapping("/requestToken")
+    public SingleResponse requestToken(HttpServletRequest request) {
+        JwtTokenVO jwtTokenVO = jwtLoginService.requestToken(request.getHeader("Authorization"));
+        return new SingleResponse(jwtTokenVO);
+    }
 }
