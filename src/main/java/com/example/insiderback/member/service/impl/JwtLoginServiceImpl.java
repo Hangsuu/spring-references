@@ -59,39 +59,29 @@ public class JwtLoginServiceImpl implements JwtLoginService {
     }
 
     @Override
-    public JwtTokenVO requestToken(String accessToken) {
+    public JwtTokenVO requestToken(String refreshToken) {
         log.info("requestToken start");
         // access 토큰이 유효하지 않은 경우
-        String id = jwtTokenProvider.getIdFromJwtToken(accessToken);
+        String id = jwtTokenProvider.getIdFromJwtToken(refreshToken);
         //refresh 토큰 체크
-        Optional<MemberRedisEntity> byId = redisRepository.findById("refreshToken" + id);
+        boolean isValidate = jwtTokenProvider.validateToken(refreshToken);
         JwtTokenVO jwtTokenVO = null;
 
-        String refreshToken = "";
-        if(byId.isEmpty()) {
+        if(!isValidate) {
             // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
             redisRepository.deleteById("accessToken" + id);
             redisRepository.deleteById("refreshToken" + id);
         } else {
-            refreshToken = redisRepository.findById("refreshToken" + id).get().getJwtToken();
+            log.info("리프레시 토큰 재발급");
             log.info("refreshToken = {}", refreshToken);
-            boolean isRefreshTokenValidate = jwtTokenProvider.validateToken(refreshToken);
-            if(isRefreshTokenValidate) {
-                log.info("리프레시 토큰 재발급");
-                // 리스레시 토큰이 유효하다면 access, refresh token renew
-                Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
-                jwtTokenVO = jwtTokenProvider.generateToken(authentication);
+            // 리스레시 토큰이 유효하다면 access, refresh token renew
+            Authentication authentication = jwtTokenProvider.getAuthentication(refreshToken);
+            jwtTokenVO = jwtTokenProvider.generateToken(authentication);
 
-                redisRepository.deleteById("accessToken" + id);
-                redisRepository.deleteById("refreshToken" + id);
-                redisRepository.save(new MemberRedisEntity("accessToken" + id ,jwtTokenVO.getAccessToken()));
-                redisRepository.save(new MemberRedisEntity("refreshToken" + id, jwtTokenVO.getAccessToken()));
-
-            } else {
-                // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
-                redisRepository.deleteById("accessToken" + id);
-                redisRepository.deleteById("refreshToken" + id);
-            }
+            redisRepository.deleteById("accessToken" + id);
+            redisRepository.deleteById("refreshToken" + id);
+            redisRepository.save(new MemberRedisEntity("accessToken" + id ,jwtTokenVO.getAccessToken()));
+            redisRepository.save(new MemberRedisEntity("refreshToken" + id, jwtTokenVO.getAccessToken()));
         }
         return jwtTokenVO;
     }
