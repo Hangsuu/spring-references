@@ -60,6 +60,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
 
     @Override
     public JwtTokenVO requestToken(String accessToken) {
+        log.info("requestToken start");
         // access 토큰이 유효하지 않은 경우
         String id = jwtTokenProvider.getIdFromJwtToken(accessToken);
         //refresh 토큰 체크
