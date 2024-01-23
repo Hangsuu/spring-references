@@ -19,11 +19,11 @@ public class LoggingInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         log.info("afterCompletion");
-        if(request.getClass().getName().contains("SecurityContextHolderAwareRequestWrapper")
-            || request.getClass().getName().contains("StandardMultipartHttpServletRequest")) {
+        if(request.getClass().getName().contains("SecurityContextHolderAwareRequestWrapper") //보안 관련 기능을 사용할 때 HTTP 요청 객체를 래핑하는 역할
+            || request.getClass().getName().contains("StandardMultipartHttpServletRequest")) { // 파일 업로드와 관련된 요청을 처리하는 데 사용
             return;
         }
-
+        // HTTP 요청과 응답의 내용을 캐싱할 수 있는 래퍼 클래스
         final ContentCachingRequestWrapper cachingRequest = (ContentCachingRequestWrapper) request;
         final ContentCachingResponseWrapper cachingResponse = (ContentCachingResponseWrapper) response;
 
