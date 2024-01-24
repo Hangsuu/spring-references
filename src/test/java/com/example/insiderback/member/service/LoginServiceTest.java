@@ -1,5 +1,7 @@
 package com.example.insiderback.member.service;
 
+import com.example.insiderback.common.model.CmmnPagingModel;
+import com.example.insiderback.common.model.CmmnPagingVO;
 import com.example.insiderback.member.repository.MemberMapper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,9 +15,13 @@ public class LoginServiceTest {
 
     @Test
     void selectOne() {
-        int one = memberMapper.selectOne();
+        CmmnPagingModel model = new CmmnPagingModel();
+        model.setCurrentPage(1);
+        model.setFirstIndex(1);
+        model.setLastIndex(5);
+        CmmnPagingVO one = memberMapper.selectOne(model);
 
-        Assertions.assertThat(one).isEqualTo(1);
+        Assertions.assertThat(one.getRnum()).isEqualTo(1);
     }
 
 }

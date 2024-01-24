@@ -1,6 +1,7 @@
 package com.example.insiderback.common.interceptor;
 
 import com.example.insiderback.common.model.CmmnPagingModel;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -10,11 +11,15 @@ import org.apache.ibatis.plugin.Invocation;
 import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.springframework.stereotype.Component;
 
+@Slf4j
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
+@Component
 public class MybatisInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
+        log.info("start sql interceptor");
         Object[] args = invocation.getArgs();
         MappedStatement mappedStatement = (MappedStatement) args[0];
         BoundSql boundSql = mappedStatement.getBoundSql(args[1]);
@@ -54,7 +59,8 @@ public class MybatisInterceptor implements Interceptor {
         sb.append(sql);
         sb.append("\n        ) tmp\n");
         sb.append("    ) pagi\n");
-        sb.append("where pagi.rnum between " + so.getFirstIndex() + " and" + so.getLastIndex());
+        sb.append("where pagi.rnum between " + so.getFirstIndex() + "and " + so.getLastIndex());
+        log.info("paging sql = {}", sb.toString());
         return sb.toString();
     }
 }
