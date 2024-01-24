@@ -4,7 +4,7 @@ spring:
       enabled: true
 
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:tcp://localhost/~/test
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -16,3 +16,18 @@ spring:
 
 jwt:
   secret: 236979CB6F1AD6B6A6184A31E6BE37DB3818CC36871E26235DD67DCFE4041492
+
+
+
+#MyBatis
+mybatis:
+  type-aliases: com.example.insider-back.member.repository
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com:
+      example:
+        insiderback:
+          member:
+            repository: trace
