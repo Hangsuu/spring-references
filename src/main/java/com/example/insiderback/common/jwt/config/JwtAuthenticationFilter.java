@@ -1,5 +1,6 @@
 package com.example.insiderback.common.jwt.config;
 
+import com.example.insiderback.common.jwt.model.JwtData;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
 import com.example.insiderback.common.redis.repository.RedisRepository;
 import jakarta.servlet.FilterChain;
@@ -37,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         // 1. Request Header에서 JWT 토큰 추출
-        String token = ((HttpServletRequest) request).getHeader("Authorization");
+        String token = ((HttpServletRequest) request).getHeader("Authorization").replaceAll(JwtData.BEARER.getName(), "");
 
         log.info("token = {}", token);
         boolean isValidatedToken = false;
