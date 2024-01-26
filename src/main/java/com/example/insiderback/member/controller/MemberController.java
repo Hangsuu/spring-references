@@ -56,4 +56,10 @@ public class MemberController {
         JwtTokenVO jwtTokenVO = jwtLoginService.requestToken(request.getHeader("Authorization").replaceAll("Bearer", ""));
         return new SingleResponse(jwtTokenVO);
     }
+
+    @PostMapping("/logout")
+    public SingleResponse logout(@RequestBody MemberVO memberVO) {
+        jwtLoginService.logout(memberVO);
+        return new SingleResponse(true);
+    }
 }

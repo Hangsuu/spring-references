@@ -56,7 +56,10 @@ public class JwtLoginServiceImpl implements JwtLoginService {
 
     @Override
     public void logout(MemberVO vo) {
-
+        redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + vo.getId());
+        redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + vo.getId());
+        redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + vo.getId());
+        redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + vo.getId());
     }
 
     @Override
