@@ -1,5 +1,6 @@
 package com.example.insiderback.common.jwt.service;
 
+import com.example.insiderback.common.jwt.model.JwtConstants;
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.member.model.MemberVO;
 import io.jsonwebtoken.*;
@@ -51,7 +52,7 @@ public class JwtTokenProvider {
 
         // Access Token 생성
 //        Date accessTokenExpiresIn = new Date(now + 86400000);
-        Date accessTokenExpiresIn = new Date(now + 1000*30);
+        Date accessTokenExpiresIn = new Date(now + JwtConstants.ACCESS_TOKEN_EXPIRED);
         // 인증된 사용자의 권한 정보와 만료 시간을 담고 있음
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
@@ -64,7 +65,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
-                .setExpiration(new Date(now + 86400000*7L))
+                .setExpiration(new Date(now + JwtConstants.REFRESH_TOKEN_EXPIRED))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 

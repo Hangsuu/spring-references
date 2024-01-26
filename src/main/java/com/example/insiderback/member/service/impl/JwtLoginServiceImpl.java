@@ -1,5 +1,6 @@
 package com.example.insiderback.member.service.impl;
 
+import com.example.insiderback.common.jwt.model.JwtData;
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
 import com.example.insiderback.common.redis.entity.MemberRedisEntity;
@@ -45,10 +46,10 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         // 4. redis에 저장
         log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtTokenVO.getAccessToken(), jwtTokenVO.getRefreshToken());
-        redisRepository.deleteById("accessToken" + vo.getId());
-        redisRepository.deleteById("refreshToken" + vo.getId());
-        redisRepository.save(new MemberRedisEntity("accessToken" + vo.getId() ,jwtTokenVO.getAccessToken()));
-        redisRepository.save(new MemberRedisEntity("refreshToken" + vo.getId(), jwtTokenVO.getRefreshToken()));
+        redisRepository.deleteById(JwtData.ACCESS_TOKEN + vo.getId());
+        redisRepository.deleteById(JwtData.REFRESH_TOKEN + vo.getId());
+        redisRepository.save(new MemberRedisEntity(JwtData.ACCESS_TOKEN.getName() + vo.getId() ,jwtTokenVO.getAccessToken()));
+        redisRepository.save(new MemberRedisEntity(JwtData.REFRESH_TOKEN.getName() + vo.getId(), jwtTokenVO.getRefreshToken()));
 
         return jwtTokenVO;
     }
