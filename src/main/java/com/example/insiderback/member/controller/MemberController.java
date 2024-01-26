@@ -53,7 +53,7 @@ public class MemberController {
 
     @PostMapping("/requestToken")
     public SingleResponse requestToken(HttpServletRequest request) {
-        JwtTokenVO jwtTokenVO = jwtLoginService.requestToken(request.getHeader("Authorization"));
+        JwtTokenVO jwtTokenVO = jwtLoginService.requestToken(request.getHeader("Authorization").replaceAll("Bearer", ""));
         return new SingleResponse(jwtTokenVO);
     }
 }
