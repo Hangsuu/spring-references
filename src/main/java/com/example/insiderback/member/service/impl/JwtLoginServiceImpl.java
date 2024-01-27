@@ -47,9 +47,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         log.info("request username = {}, password = {}", vo.getId(), vo.getPassword());
         log.info("jwtToken accessToken = {}, refreshToken = {}", jwtTokenVO.getAccessToken(), jwtTokenVO.getRefreshToken());
         redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + vo.getId());
-        redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + vo.getId());
         redisRepository.save(new MemberRedisEntity(JwtData.ACCESS_TOKEN.getName() + vo.getId() ,jwtTokenVO.getAccessToken()));
-        redisRepository.save(new MemberRedisEntity(JwtData.REFRESH_TOKEN.getName() + vo.getId(), jwtTokenVO.getRefreshToken()));
 
         return jwtTokenVO;
     }
@@ -57,9 +55,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
     @Override
     public void logout(MemberVO vo) {
         redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + vo.getId());
-        redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + vo.getId());
         redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + vo.getId());
-        redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + vo.getId());
     }
 
     @Override
@@ -74,7 +70,6 @@ public class JwtLoginServiceImpl implements JwtLoginService {
         if(!isValidate) {
             // 리프레시 토큰이 유효하지 않다면 access, refresh 토큰 기록 삭제
             redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + id);
-            redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + id);
         } else {
             log.info("리프레시 토큰 재발급");
             log.info("refreshToken = {}", refreshToken);
@@ -83,9 +78,7 @@ public class JwtLoginServiceImpl implements JwtLoginService {
             jwtTokenVO = jwtTokenProvider.generateToken(authentication);
 
             redisRepository.deleteById(JwtData.ACCESS_TOKEN.getName() + id);
-            redisRepository.deleteById(JwtData.REFRESH_TOKEN.getName() + id);
             redisRepository.save(new MemberRedisEntity(JwtData.ACCESS_TOKEN.getName() + id ,jwtTokenVO.getAccessToken()));
-            redisRepository.save(new MemberRedisEntity(JwtData.REFRESH_TOKEN.getName() + id, jwtTokenVO.getAccessToken()));
         }
         return jwtTokenVO;
     }
