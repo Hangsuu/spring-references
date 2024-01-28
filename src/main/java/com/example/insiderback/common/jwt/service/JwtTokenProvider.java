@@ -64,7 +64,7 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setSubject(JwtData.ACCESS_TOKEN.getName()) // 토큰 제목
                 .claim("iss", baseUrl)  // 토큰 발급자
-                .claim("id", authentication.getName())
+                .claim("userId", authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -74,7 +74,7 @@ public class JwtTokenProvider {
         String refreshToken = Jwts.builder()
                 .setSubject(JwtData.REFRESH_TOKEN.getName())
                 .claim("iss", baseUrl)
-                .claim("id", authentication.getName())
+                .claim("userId", authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(new Date(now + JwtConstants.REFRESH_TOKEN_EXPIRED))
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -97,7 +97,7 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         // Jwt 토큰 복호화
         Claims claims = parseClaims(accessToken);
-        log.info("claims id = {}", claims.getSubject());
+        log.info("claims id = {}", claims.get("userId"));
 
         if (claims.get("auth") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
@@ -116,7 +116,7 @@ public class JwtTokenProvider {
          */
         //주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
         log.info("authorities = {}", authorities);
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new User((String) claims.get("userId"), "", authorities);
         // UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증(Authentication) 객체를 생성
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
@@ -138,7 +138,7 @@ public class JwtTokenProvider {
          */
         //주어진 토큰의 클레임에서 "sub" 클레임의 값을 반환 토큰의 주체를 나타냄. ex) 사용자의 식별자나 이메일 주소
         log.info("authorities = {}", authorities);
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new User((String) claims.get("userId"), "", authorities);
         // UsernamepasswordAuthenticationToken 객체를 생성하여 주체와 권한 정보를 포함한 인증(Authentication) 객체를 생성
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);
     }
@@ -200,6 +200,6 @@ public class JwtTokenProvider {
 
     public String getIdFromJwtToken(String token) {
         Claims claims = parseClaims(token);
-        return claims.getSubject();
+        return (String) claims.get("userId");
     }
 }
