@@ -1,6 +1,7 @@
 package com.example.insiderback.common.jwt.service;
 
 import com.example.insiderback.common.jwt.model.JwtConstants;
+import com.example.insiderback.common.jwt.model.JwtData;
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.member.model.MemberVO;
 import io.jsonwebtoken.*;
@@ -34,6 +35,12 @@ public class JwtTokenProvider {
     private final Key key;
     @Autowired
     private AuthenticationManagerBuilder authenticationManagerBuilder;
+    private static String baseUrl;
+
+    @Value("${spring.data.rest.base-path}")
+    public void setKey(String value) {
+        baseUrl = value;
+    }
 
     // application.yml에서 secret 값 가져와서 key에 저장
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
@@ -55,7 +62,9 @@ public class JwtTokenProvider {
         Date accessTokenExpiresIn = new Date(now + JwtConstants.ACCESS_TOKEN_EXPIRED);
         // 인증된 사용자의 권한 정보와 만료 시간을 담고 있음
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(JwtData.ACCESS_TOKEN.getName()) // 토큰 제목
+                .claim("iss", baseUrl)  // 토큰 발급자
+                .claim("id", authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -63,7 +72,9 @@ public class JwtTokenProvider {
 
         // Refresh Token 생성 : Access Token의 갱신을 위해 사용 됨
         String refreshToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(JwtData.REFRESH_TOKEN.getName())
+                .claim("iss", baseUrl)
+                .claim("id", authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(new Date(now + JwtConstants.REFRESH_TOKEN_EXPIRED))
                 .signWith(key, SignatureAlgorithm.HS256)
