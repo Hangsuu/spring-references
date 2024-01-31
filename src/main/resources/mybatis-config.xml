@@ -5,14 +5,27 @@
         <setting name="mapUnderscoreToCamelCase" value="true" />
         <setting name="callSettersOnNulls" value="true" />
         <setting name="jdbcTypeForNull" value="NULL" />
+        <setting name="cacheEnabled" value="true" />
+        <setting name="lazyLoadingEnabled" value="true" />
+        <setting name="aggressiveLazyLoading" value="true" />
+        <setting name="defaultExecutorType" value="REUSE" />
+        <setting name="defaultStatementTimeout" value="300" />
+        <setting name="localCacheScope" value="SESSION" />
+        <setting name="useGeneratedKeys" value="true" />
     </settings>
+
     <typeAliases>
         <typeAlias alias="sql" type="java.util.HashMap"/>
+        <typeAlias type="com.example.insiderback.common.mybatis.AESHandler" alias="AESHandler" />
     </typeAliases>
+
     <typeHandlers>
         <typeHandler javaType="java.lang.String" jdbcType="CLOB" handler="org.apache.ibatis.type.ClobTypeHandler" />
+        <typeHandler handler="com.example.insiderback.common.mybatis.AESHandler" />
     </typeHandlers>
+
     <plugins>
         <plugin interceptor="com.example.insiderback.common.interceptor.MybatisInterceptor"/>
+        <plugin interceptor="com.example.insiderback.common.interceptor.MaskingInterceptor"/>
     </plugins>
 </configuration>
