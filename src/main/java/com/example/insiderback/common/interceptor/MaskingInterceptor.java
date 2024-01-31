@@ -1,6 +1,8 @@
-package com.example.insiderback.common.mybatis;
+package com.example.insiderback.common.interceptor;
 
-import io.swagger.v3.core.util.AnnotationsUtils;
+import com.example.insiderback.common.mybatis.MaskingClass;
+import com.example.insiderback.common.mybatis.MaskingUtil;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.plugin.Intercepts;
@@ -12,7 +14,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handlerResultSets", args = {Statement.class})})
 public class MaskingInterceptor implements Interceptor {
@@ -41,7 +42,7 @@ public class MaskingInterceptor implements Interceptor {
     // masking 대상 class 여부 확인
     private boolean needToMasking(Object object) {
         Class objectClass=  object.getClass();
-        MaskingClass maskingClass = AnnotationsUtils.getAnnotation(objectClass, MaskingClass.class);
+        MaskingClass maskingClass = AnnotationUtils.getAnnotation(objectClass, MaskingClass.class);
         return Objects.nonNull(maskingClass);
     }
 }

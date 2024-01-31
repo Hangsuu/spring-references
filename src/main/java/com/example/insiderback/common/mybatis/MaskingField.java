@@ -7,5 +7,9 @@ import java.lang.annotation.*;
 @Documented                         // javadoc에 의해 문서화
 @Target(ElementType.FIELD)          // 타입/필드 선언 시 어노테이션 사용(ElementType.Type)
 public @interface MaskingField {
-    MaskingData value();
+    MaskingType value() default MaskingType.NONE;
+
+    enum MaskingType {
+        NONE, ID, NAME;
+    }
 }
