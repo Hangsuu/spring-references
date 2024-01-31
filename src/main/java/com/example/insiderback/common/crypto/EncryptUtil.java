@@ -34,8 +34,10 @@ public class EncryptUtil {
             IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
 
-            byte[] encrypted = cipher.doFinal(value.getBytes("UTF-8"));
-            return Base64.getEncoder().encodeToString(encrypted);
+            // 주어진 값을 UTF-8 문자열로 변환한 후에 복호화를 진행(AESHandler의 decrypt()와 비교)
+            byte[] decrypted = cipher.doFinal(value.getBytes("UTF-8"));
+            // 복호화된 결과를 Base64로 인코딩하여 반환, 네트워크 통신에 사용되는 경우 사용
+            return Base64.getEncoder().encodeToString(decrypted);
         } catch (NullPointerException e) {
             return null;
         }
