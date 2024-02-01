@@ -22,6 +22,8 @@ public class LoginServiceTest {
         CmmnPagingVO one = memberMapper.selectOne(model);
 
         Assertions.assertThat(one.getRnum()).isEqualTo(1);
+
+        System.out.println("테스트 완료");
     }
 
 }
