@@ -15,8 +15,9 @@
     </settings>
 
     <typeAliases>
-        <typeAlias alias="sql" type="java.util.HashMap"/>
-        <typeAlias type="com.example.insiderback.common.mybatis.AESHandler" alias="AESHandler" />
+<!--        <typeAlias alias="sql" type="java.util.HashMap"/>-->
+        <typeAlias alias="AESHandler" type="com.example.insiderback.common.mybatis.AESHandler" />
+<!--        <typeAlias alias="annotation" type="com.example.insiderback.member.model.AnnotationTestVO" />-->
     </typeAliases>
 
     <typeHandlers>
