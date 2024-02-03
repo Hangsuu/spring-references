@@ -9,4 +9,12 @@
     <select id="selectAnnotation" resultType="com.example.insiderback.member.model.AnnotationTestVO">
         select 13 as age, 'abc' as name
     </select>
+
+    <select id="selectEncrypt" resultMap="encryptResultMap">
+        select 'zUxlJVqzvqEkZm4vGxYk6A==' as id;
+    </select>
+
+    <resultMap id="encryptResultMap" type="com.example.insiderback.member.model.EncryptTestVO">
+        <result column="id" property="id" typeHandler="com.example.insiderback.common.mybatis.AESHandler" javaType="String" />
+    </resultMap>
 </mapper>

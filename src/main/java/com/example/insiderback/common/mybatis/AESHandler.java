@@ -17,7 +17,7 @@ public class AESHandler extends BaseTypeHandler {
     private static String key = "a00aa00000aaaaaaafdfdfdf98989889";
     public static byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-    private String encrypt(String value) throws Exception {
+    public String encrypt(String value) throws Exception {
         Cipher cipher = Cipher.getInstance(alg);
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
         IvParameterSpec ivParameterSpec = new IvParameterSpec(ivBytes);

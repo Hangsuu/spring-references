@@ -23,7 +23,7 @@ jwt:
 
 #MyBatis
 mybatis:
-  type-aliases: com.example.insider-back.member.repository
+  type-aliases: com.example.insider-back.member.repository,com.example.insider-back.common.mybatis
   configuration:
     map-underscore-to-camel-case: true
 logging:
