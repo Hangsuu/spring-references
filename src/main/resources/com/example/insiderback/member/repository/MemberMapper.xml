@@ -6,8 +6,8 @@
         select 1 as count
     </select>
 
-    <select id="selectAnnotation" resultType="annotation">
-        select 13 as age, 'abc' as name
+    <select id="selectAnnotation" resultType="com.example.insiderback.member.model.AnnotationTestVO">
+        select 13 as age, 'abc' as name_value
     </select>
 
     <select id="selectEncrypt" resultMap="encryptResultMap">

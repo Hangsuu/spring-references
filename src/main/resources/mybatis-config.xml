@@ -16,13 +16,13 @@
 
     <typeAliases>
 <!--        <typeAlias alias="sql" type="java.util.HashMap"/>-->
-        <typeAlias alias="AESHandler" type="com.example.insiderback.common.mybatis.AESHandler" />
-<!--        <typeAlias alias="annotation" type="com.example.insiderback.member.model.AnnotationTestVO" />-->
+<!--        <typeAlias alias="AESHandler" type="com.example.insiderback.common.mybatis.AESHandler" />-->
+        <typeAlias alias="annotation" type="com.example.insiderback.member.model.AnnotationTestVO" />
     </typeAliases>
 
     <typeHandlers>
-        <typeHandler javaType="java.lang.String" jdbcType="CLOB" handler="org.apache.ibatis.type.ClobTypeHandler" />
-        <typeHandler handler="com.example.insiderback.common.mybatis.AESHandler" />
+<!--        <typeHandler javaType="java.lang.String" jdbcType="CLOB" handler="org.apache.ibatis.type.ClobTypeHandler" />-->
+<!--        <typeHandler handler="com.example.insiderback.common.mybatis.AESHandler" />-->
     </typeHandlers>
 
     <plugins>

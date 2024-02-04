@@ -35,7 +35,7 @@ public class LoginServiceTest {
     @Test
     void selectAnnotation() {
         AnnotationTestVO model = memberMapper.selectAnnotation();
-        assertThat(model.getName()).isEqualTo("ab*");
+        assertThat(model.getNameValue()).isEqualTo("ab*");
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.insiderback.common.mybatis;
 
+import org.apache.ibatis.type.Alias;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Base64;
 
+@Alias("AESHandler")
 public class AESHandler extends BaseTypeHandler {
     private static String alg = "AES/CBC/PKCS5Padding";
     private static String key = "a00aa00000aaaaaaafdfdfdf98989889";
