@@ -23,9 +23,10 @@ jwt:
 
 #MyBatis -> mybatis-config.xml works
 mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-  type-aliases-package: com.example.insiderback.member.model, com.example.insiderback.common.mybatis
+  config-location: classpath:mybatis-config.xml
+#  configuration:
+#    map-underscore-to-camel-case: true
+#  type-aliases-package: com.example.insiderback.member.model, com.example.insiderback.common.mybatis
 #  type-handlers-package: com.example.insider-back.common.mybatis
 logging:
   level:
