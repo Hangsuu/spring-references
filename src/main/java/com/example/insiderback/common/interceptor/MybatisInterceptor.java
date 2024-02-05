@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Intercepts({@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class})})
-@Component
 public class MybatisInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {

@@ -19,7 +19,6 @@ import java.util.Objects;
 
 @Slf4j
 @Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {Statement.class})})
-@Component
 public class MaskingInterceptor implements Interceptor {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
