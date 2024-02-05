@@ -6,7 +6,7 @@
         select 1 as count
     </select>
 
-    <select id="selectAnnotation" resultType="com.example.insiderback.member.model.AnnotationTestVO">
+    <select id="selectAnnotation" resultType="annotation">
         select 13 as age, 'abc' as name_value
     </select>
 
