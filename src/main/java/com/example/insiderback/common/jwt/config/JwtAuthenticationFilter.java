@@ -41,8 +41,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("requestURL = {}", request.getRequestURL());
         // 토큰 재발급 URL일 경우
-        if(request.getRequestURL().toString().equals(baseUrl + "member/requestToken")) {
+        if(request.getRequestURL().toString().equals(baseUrl + "rest/member/requestToken")) {
             // 토큰이 없어도 접근 허용
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // 로그인 URL일 경우 접근허용
+        if(request.getRequestURL().toString().equals(baseUrl + "rest/member/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        //rest api 접근이 아닐 경우(swagger-ui 등)
+        if(!request.getRequestURL().toString().contains("rest")) {
             filterChain.doFilter(request, response);
             return;
         }

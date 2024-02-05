@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> // 요청에 대한 인가 규칙 설정
                         authorize
-                                .requestMatchers("/member/**").permitAll() // "members/sign-in" 경로에 대한 요청은 모든 사용자에게 허용
+                                .requestMatchers("/**").permitAll() // "members/sign-in" 경로에 대한 요청은 모든 사용자에게 허용
                                 .requestMatchers("/member/test").hasRole("USER") // "members/test" 경로에 대한 요청은 "USER" 권한을 가진 사용자만 허용
                                 .anyRequest().authenticated() // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 )
