@@ -35,3 +35,16 @@ logging:
         insiderback:
           member:
             repository: trace
+
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+#        exclude: "env,beans"
+  endpoint:
+    shutdown:
+      enabled: true
+  health:
+    show-details: always

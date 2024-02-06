@@ -58,7 +58,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         // 1. Request Header에서 JWT 토큰 추출
-        String token = ((HttpServletRequest) request).getHeader("Authorization").replaceAll(JwtData.BEARER.getName(), "");
+        String headerAuthorization = ((HttpServletRequest) request).getHeader("Authorization");
+        String token = "";
+        if(headerAuthorization != null) {
+            token = headerAuthorization.replaceAll(JwtData.BEARER.getName(), "");
+        }
 
         log.info("token = {}", token);
         boolean isValidatedToken = false;
