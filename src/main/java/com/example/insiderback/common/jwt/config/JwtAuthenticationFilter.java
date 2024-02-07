@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 클라이언트 요청 시 JWT 인증을 하기 위해 설치하는 커스텀 필터로, UsernamePasswordAuthenticationFilter 이전에 실행 할 것이다.
@@ -27,6 +30,8 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private static String baseUrl;
+
+    private static final Set<String> approvedUrl = new HashSet<>(Arrays.asList("member/requestToken", "member/login"));
 
     @Value("${spring.data.rest.base-path}")
     public void setKey(String value) {
@@ -40,23 +45,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("requestURL = {}", request.getRequestURL());
-        // 토큰 재발급 URL일 경우
-        if(request.getRequestURL().toString().equals(baseUrl + "rest/member/requestToken")) {
+        // 토큰 재발급 URL일 경우, 로그인 URL일 경우 접근 허용
+        if(approvedUrl.contains(request.getRequestURL().toString().replaceAll(baseUrl + "rest/", "")) ||
+                //rest api 접근이 아닐 경우(swagger-ui 등)
+                !request.getRequestURL().toString().contains("rest")) {
             // 토큰이 없어도 접근 허용
             filterChain.doFilter(request, response);
             return;
         }
-        // 로그인 URL일 경우 접근허용
-        if(request.getRequestURL().toString().equals(baseUrl + "rest/member/login")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        //rest api 접근이 아닐 경우(swagger-ui 등)
-        if(!request.getRequestURL().toString().contains("rest")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
+
         // 1. Request Header에서 JWT 토큰 추출
         String headerAuthorization = ((HttpServletRequest) request).getHeader("Authorization");
         String token = "";
