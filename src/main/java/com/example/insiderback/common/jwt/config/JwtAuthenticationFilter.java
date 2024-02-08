@@ -3,6 +3,7 @@ package com.example.insiderback.common.jwt.config;
 import com.example.insiderback.common.jwt.model.JwtData;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
 import com.example.insiderback.common.redis.repository.RedisRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -65,7 +66,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         boolean isValidatedToken = false;
         boolean tokenIsNotEmpty = token != null && !token.equals("");
         if(tokenIsNotEmpty) {
-            isValidatedToken = jwtTokenProvider.validateToken(token);
+            try {
+                isValidatedToken = jwtTokenProvider.validateToken(token);
+            } catch (RuntimeException e) {
+                // 만료된 토큰일 경우 403 Forbidden 에러를 발생시킴
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            } catch (Exception e) {
+                // 기타 예외가 발생한 경우 500 Internal Server Error를 발생시킴
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                return;
+            }
         }
 
         // 2. validateToken으로 토큰 유효성 검사
