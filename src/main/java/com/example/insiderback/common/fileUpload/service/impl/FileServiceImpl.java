@@ -43,4 +43,9 @@ public class FileServiceImpl implements FileService {
             return false;
         }
     }
+
+    @Override
+    public AttachmentVO selectOne(int attachmentNo) {
+        return attachmentMapper.selectOne(attachmentNo);
+    }
 }

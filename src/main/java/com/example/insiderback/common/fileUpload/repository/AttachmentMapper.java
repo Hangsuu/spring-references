@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface AttachmentMapper {
     public int selectAttachmentNo();
     public void insertAttachment(AttachmentVO attachmentVO);
-    public void selectAttachment(int attachmentNo);
+    public AttachmentVO selectOne(int attachmentNo);
 }

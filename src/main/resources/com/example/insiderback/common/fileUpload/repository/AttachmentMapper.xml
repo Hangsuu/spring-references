@@ -15,7 +15,7 @@
             #{attachmentRoute}
             )
     </insert>
-    <select id="selectAttachment" resultType="com.example.insiderback.common.fileUpload.model.AttachmentVO">
+    <select id="selectOne" resultType="com.example.insiderback.common.fileUpload.model.AttachmentVO">
         select * from attachment where attachment_no = #{attachmentNo}
     </select>
 </mapper>

@@ -48,3 +48,7 @@ management:
       enabled: true
   health:
     show-details: always
+
+custom:
+  fileupload:
+    path: D:/upload/insider-back
