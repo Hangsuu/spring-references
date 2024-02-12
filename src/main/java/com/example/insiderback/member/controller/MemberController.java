@@ -2,6 +2,7 @@ package com.example.insiderback.member.controller;
 
 import com.example.insiderback.common.fileUpload.model.AttachmentVO;
 import com.example.insiderback.common.fileUpload.repository.AttachmentMapper;
+import com.example.insiderback.common.fileUpload.service.FileService;
 import com.example.insiderback.common.jwt.model.JwtTokenVO;
 import com.example.insiderback.common.redis.entity.MemberRedisEntity;
 import com.example.insiderback.common.redis.repository.RedisRepository;
@@ -28,7 +29,7 @@ public class MemberController {
     @Autowired
     JwtLoginService jwtLoginService;
     @Autowired
-    AttachmentMapper attachmentMapper;
+    FileService fileService;
 
     @PostMapping("/getUser")
     public MemberVO login(String id) {
@@ -72,25 +73,7 @@ public class MemberController {
     }
 
     @PostMapping("/upload")
-    public SingleResponse upload(@RequestParam MultipartFile attach) throws IllegalStateException, IOException {
-        if(!attach.isEmpty()) {	//파일이 있을 경우
-            //번호생성
-            int attachmentNo = attachmentMapper.selectAttachmentNo();
-            File dir = new File("D:/upload/insider-back");	//파일 저장 위치
-            dir.mkdirs(); 		//폴더 생성 명령
-            File target = new File(dir, String.valueOf(attachmentNo));		//파일명은 int로 안들어감
-            attach.transferTo(target);
-            //DB 저장
-            AttachmentVO attachmentVO = AttachmentVO.builder()
-                    .attachmentNo(attachmentNo)
-                    .attachmentName(attach.getName())
-                    .attachmentType(attach.getContentType())
-                    .attachmentRoute("D:/upload/insider-back/" + attachmentNo)
-                    .attachmentSize(attach.getSize())
-                    .build();
-            attachmentMapper.insertAttachment(attachmentVO);
-            return new SingleResponse(true);
-        }
-        return new SingleResponse(false);
+    public SingleResponse upload(@RequestParam MultipartFile attach) {
+        return new SingleResponse(fileService.upload(attach));
     }
 }
