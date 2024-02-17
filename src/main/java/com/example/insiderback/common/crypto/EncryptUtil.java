@@ -46,7 +46,7 @@ public class EncryptUtil {
     }
 
     // 단방향 암호화
-    public static String getHashEncryptSHA256 (String text) {
+    public String getHashEncryptSHA256 (String text) {
         try {
             // SHA-256 해시 계산
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");

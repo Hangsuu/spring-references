@@ -28,6 +28,15 @@ public class EncryptUtilTest {
 
     @Test
     public void getHashEncryptSHA256() {
+        EncryptUtil encryptUtil = new EncryptUtil();
 
+        String s1 = "testText1";
+        String s2 = "testText2";
+
+        String encryptedS1 = encryptUtil.getHashEncryptSHA256(s1);
+        String encryptedS2 = encryptUtil.getHashEncryptSHA256(s2);
+
+        Assertions.assertThat(encryptedS1).isEqualTo(encryptUtil.getHashEncryptSHA256(s1));
+        Assertions.assertThat(encryptedS1).isNotEqualTo(encryptedS2);
     }
 }
