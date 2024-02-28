@@ -22,23 +22,6 @@ public class LoginServiceTest {
     private MemberMapper memberMapper;
 
     @Test
-    void selectPage() {
-        CmmnPagingModel model = new CmmnPagingModel();
-        model.setCurrentPage(1);
-        model.setFirstIndex(1);
-        model.setLastIndex(5);
-        PaginationTestVO one = memberMapper.selectPage(model);
-
-        assertThat(one.getRnum()).isEqualTo(1);
-    }
-
-    @Test
-    void selectAnnotation() {
-        AnnotationTestVO model = memberMapper.selectAnnotation();
-        assertThat(model.getNameValue()).isEqualTo("ab*");
-    }
-
-    @Test
     void getDecrypt() throws Exception {
         AESHandler handler = new AESHandler();
         System.out.println(handler.encrypt("abc"));

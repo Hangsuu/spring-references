@@ -1,5 +1,6 @@
 package com.example.insiderback.member.model;
 
+import com.example.insiderback.common.mybatis.MaskingField;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class MemberVO implements UserDetails {
     private String id;
     private String password;
+    @MaskingField(value = MaskingField.MaskingType.NAME)
     private String name;
     private String age;
 
