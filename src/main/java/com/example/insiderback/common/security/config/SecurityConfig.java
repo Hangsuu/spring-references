@@ -1,6 +1,6 @@
 package com.example.insiderback.common.security.config;
 
-import com.example.insiderback.common.jwt.config.JwtAuthenticationFilter;
+import com.example.insiderback.common.jwt.filter.JwtAuthenticationFilter;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

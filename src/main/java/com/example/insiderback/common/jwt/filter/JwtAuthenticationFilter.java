@@ -1,14 +1,11 @@
-package com.example.insiderback.common.jwt.config;
+package com.example.insiderback.common.jwt.filter;
 
 import com.example.insiderback.common.jwt.model.JwtData;
 import com.example.insiderback.common.jwt.service.JwtTokenProvider;
-import com.example.insiderback.common.redis.repository.RedisRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
