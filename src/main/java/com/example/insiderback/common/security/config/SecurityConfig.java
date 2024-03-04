@@ -24,6 +24,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -38,6 +39,16 @@ public class SecurityConfig {
                 // REST API이므로 basic auth 및 csrf 보안을 사용하지 않음
                 .httpBasic(HttpBasicConfigurer::disable) // Basic 인증을 사용하지 않음
                 .csrf(CsrfConfigurer::disable) //CSRF(Cross-Site Request Forgery) 보안을 비활성화
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    // cors 설정
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:7070"));
+                    config.setAllowedMethods(Collections.singletonList("*"));
+                    config.setAllowCredentials(true);
+                    config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setMaxAge(3600L);
+                    return config;
+                }))
                 // JWT를 사용하기 때문에 세션을 사용하지 않음
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> // 요청에 대한 인가 규칙 설정
@@ -77,20 +88,5 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/**");
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:7070"));
-        corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(List.of("*"));
-        corsConfiguration.setExposedHeaders(List.of("*"));
-        corsConfiguration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
     }
 }
