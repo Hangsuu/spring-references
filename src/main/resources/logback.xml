@@ -1,0 +1,23 @@
+<configuration>
+    <!-- 콘솔에 로그를 출력하는 appender 설정 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- 로그 패턴 설정 -->
+            <pattern>%d{yyyy.MM.dd HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 특정 패키지들에 대한 로그 레벨 설정 -->
+    <logger name="com.common.back" level="DEBUG" />
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.apache" level="ERROR" />
+    <logger name="org.mybatis" level="WARN" />
+    <logger name="jdbc" level="WARN" />
+    <logger name="jdbc.sqlonly" level="INFO" />
+    <logger name="jdbc.resultsettable" level="DEBUG" />
+
+    <!-- 모든 로그를 출력하는 root 설정 -->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+</configuration>
