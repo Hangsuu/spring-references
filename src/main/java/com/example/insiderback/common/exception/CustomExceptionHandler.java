@@ -26,9 +26,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             return ErrorResponse.toResponseEntity(commonException.getErrorCode().getHttpStatus(),
                     commonException.getErrorCode().getDetail());
         } else {
-            log.error("handle Exception throw {} : ", e);
+//            log.error("handle Exception throw : ", e);
             e.printStackTrace();
-            String errorMessage = (originalException != null) ? originalException.toString() : "Unknown cause";
+            String errorMessage = (e.getMessage() != null) ? e.toString() : e + ": Unknown cause";
             return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
         }
     }
