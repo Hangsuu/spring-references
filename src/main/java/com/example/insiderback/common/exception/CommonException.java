@@ -15,5 +15,7 @@ public class CommonException extends RuntimeException{
     }
     public CommonException(ErrorCode errorCode){
         this.errorCode = errorCode;
+        this.status = errorCode.getHttpStatus();
+        this.message = errorCode.getDetail();
     }
 }

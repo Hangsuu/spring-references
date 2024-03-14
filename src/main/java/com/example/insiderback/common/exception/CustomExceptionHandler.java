@@ -14,7 +14,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity handleException(Exception e) {
         // 발생한 Exception 클래스 추출
         Throwable originalException = e.getCause();
-        if(originalException != null && originalException instanceof CommonException) {
+        if(e instanceof CommonException) {
+            CommonException commonException = (CommonException) e;
+            log.error("handleCustomException : ");
+            e.printStackTrace();
+            return ErrorResponse.toResponseEntity(commonException.getStatus(),
+                    commonException.getMessage());
+        } else if(originalException != null && originalException instanceof CommonException) {
             CommonException commonException = (CommonException) originalException;
             log.error("handleCustomException throw CommonException : {}", commonException.getErrorCode());
             log.error("handleCustomException throw CommonException : {}",
@@ -23,10 +29,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                     commonException.getErrorCode().getDetail());
 
             e.printStackTrace();
-            return ErrorResponse.toResponseEntity(commonException.getErrorCode().getHttpStatus(),
-                    commonException.getErrorCode().getDetail());
+            return ErrorResponse.toResponseEntity(commonException.getStatus(),
+                    commonException.getMessage());
         } else {
-//            log.error("handle Exception throw : ", e);
+            log.error("handleRuntimeException");
             e.printStackTrace();
             String errorMessage = (e.getMessage() != null) ? e.toString() : e + ": Unknown cause";
             return ErrorResponse.toResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
