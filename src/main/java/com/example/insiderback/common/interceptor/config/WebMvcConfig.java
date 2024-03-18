@@ -1,5 +1,6 @@
 package com.example.insiderback.common.interceptor.config;
 
+import com.example.insiderback.common.interceptor.ControllerLogInterceptor;
 import com.example.insiderback.common.interceptor.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -11,11 +12,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     LoggingInterceptor loggingInterceptor;
+    @Autowired
+    ControllerLogInterceptor controllerLogInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loggingInterceptor)
-                .addPathPatterns("/member/**")  // 적용할 URL 패턴 지정
+        registry.addInterceptor(controllerLogInterceptor)
+                .addPathPatterns("/**")  // 적용할 URL 패턴 지정
                 .excludePathPatterns("/public/**");  // 제외할 URL 패턴 지정
     }
 }
