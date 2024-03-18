@@ -10,11 +10,12 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LogAspect {
-    @Around("@annotation(MethodLog)")
-    public Object doLog(ProceedingJoinPoint joinPoint) throws  Throwable {
-        log.info("method start : [{}]", joinPoint.getSignature());
+    @Around("@annotation(methodLog)")
+    public Object doLog(ProceedingJoinPoint joinPoint, MethodLog methodLog) throws  Throwable {
+        String description = methodLog.description();
+        log.info("{} start : [{}]", description, joinPoint.getSignature());
         Object result = joinPoint.proceed();
-        log.info("method end : [{}]", joinPoint.getSignature());
+        log.info("{} end : [{}]",description, joinPoint.getSignature());
         return result;
     }
 }
