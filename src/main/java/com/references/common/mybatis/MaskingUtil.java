@@ -1,5 +1,7 @@
 package com.references.common.mybatis;
 
+import com.references.common.crypto.AesServiceImpl;
+import com.references.common.crypto.CryptionService;
 import com.references.common.crypto.EncryptField;
 import com.references.common.crypto.EncryptUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +41,8 @@ public class MaskingUtil {
         Object object = field.get(paramsObject);
         if (object instanceof String) {
             String value = (String) object;
-            EncryptUtil encryptUtil = new EncryptUtil();
+//            EncryptUtil encryptUtil = new EncryptUtil();
+            CryptionService encryptUtil = new AesServiceImpl("static");
             try {
                 field.set(paramsObject, encryptUtil.decrypt(value));
 //            } catch (IllegalBlockSizeException e) {
